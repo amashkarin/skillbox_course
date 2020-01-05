@@ -37,7 +37,7 @@
 
     @include('layout.nav')
 </div>
-
+@include('layout.messages')
 <main role="main" class="container">
     <div class="row">
         <div class="col-md-8 blog-main">

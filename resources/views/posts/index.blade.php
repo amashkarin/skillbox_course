@@ -2,6 +2,11 @@
 @section('content')
 
 <div class="container">
+    <div class="row mb-4">
+        <div class="col-sm-12">
+            <a class="btn btn-primary" href="/posts/create">Добавить статью</a>
+        </div>
+    </div>
     @foreach($posts as $post)
         <div class="row mb-2">
             <div class="col-sm-12">
