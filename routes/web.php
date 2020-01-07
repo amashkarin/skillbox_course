@@ -11,6 +11,8 @@
 |
 */
 
+Auth::routes();
+
 Route::get('/posts/tags/{tag}', 'TagsController@index');
 Route::resource('posts', 'PostsController');
 Route::get('/', 'PostsController@index');

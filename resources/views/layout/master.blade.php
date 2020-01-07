@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Laravel Skillbox project">
     <meta name="author" content="Alexey Mashkarin">
+    @php
+        $title = $title ?? 'Skillbox Laravel';
+    @endphp
     <title>{{ $title }}</title>
 
     <!-- Bootstrap core CSS -->
@@ -30,7 +33,25 @@
                 <a class="text-muted" href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-3"><circle cx="10.5" cy="10.5" r="7.5"></circle><line x1="21" y1="21" x2="15.8" y2="15.8"></line></svg>
                 </a>
-                <a class="btn btn-sm btn-outline-secondary" href="#">Sign up</a>
+                @guest
+                        <a class="btn btn-primary" href="{{ route('login') }}">{{ __('Login') }}</a>
+                    @if (Route::has('register'))
+                            <a class="btn btn-primary" href="{{ route('register') }}">{{ __('Register') }}</a>
+                    @endif
+                @else
+                    <span class="font-weight-bold mr-4">
+                        {{ Auth::user()->name }}
+                    </span>
+                    <a class="btn btn-primary" href="{{ route('logout') }}"
+                       onclick="event.preventDefault();
+                                             document.getElementById('logout-form').submit();">
+                        {{ __('Logout') }}
+                    </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                @endguest
             </div>
         </div>
     </header>
@@ -51,8 +72,9 @@
 
         </div><!-- /.blog-main -->
 
-        @include('layout.aside')
-
+        @section('aside')
+            @include('layout.aside')
+        @show
     </div><!-- /.row -->
 
 </main><!-- /.container -->
