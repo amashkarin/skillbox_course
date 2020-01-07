@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Post;
+use App\Tag;
 
 class PostsController extends Controller
 {
@@ -11,7 +12,7 @@ class PostsController extends Controller
     public function index()
     {
         $title = 'Список статей';
-        $posts = Post::where('published', true)->latest()->get();
+        $posts = Post::where('published', true)->with('tags')->latest()->get();
         return view('posts.index', compact('title', 'posts'));
     }
 
@@ -61,7 +62,21 @@ class PostsController extends Controller
 
         \Session::flash('message', 'Статья успешно обновлена');
 
-        return redirect('/posts/' . $post->slug . '/edit');
+        $postTags = $post->tags->keyBy('name');
+        $newTags = collect(explode(',', request('tags')))->keyBy(function ($item) {
+            return $item;
+        });
+        $syncIds = $postTags->intersectByKeys($newTags)->pluck('id')->toArray();
+
+        $tagsToCreate = $newTags->diffKeys($postTags);
+        foreach ($tagsToCreate as $tagName){
+            $tag = Tag::firstOrCreate(['name' => $tagName]);
+            $syncIds[] = $tag->id;
+        }
+
+        $post->tags()->sync($syncIds);
+
+        return redirect('/posts/' . $post->getRouteKey());
 
     }
 

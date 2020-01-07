@@ -3,6 +3,7 @@
     <div class="mb-2">
         <i>{{ $post->created_at }}</i>
     </div>
+    @include('layout.tags', ['tags' => $post->tags])
     {{ $post->body }}
     <hr>
     <form action="/posts/{{$post->getRouteKey()}}" method="post">

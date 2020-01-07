@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Tag;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        \View::composer('layout.aside', function($view) {
+            $view->with('tagsCloud', Tag::has('posts')->get());
+        });
     }
 
     /**
