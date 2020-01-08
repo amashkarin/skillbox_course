@@ -9,6 +9,17 @@ use App\Tag;
 class PostsController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth', ['only' => [
+            'store',
+            'create',
+            'update',
+            'edit',
+            'destroy',
+        ]]);
+    }
+
     public function index()
     {
         $title = 'Список статей';
@@ -26,6 +37,7 @@ class PostsController extends Controller
             'body' => 'required',
         ]);
         $attributes['published'] = request('published') ? : 0;
+        $attributes['owner_id'] = \Auth::id();
 
         Post::create($attributes);
         \Session::flash('message', 'Статья успешно добавлена');
@@ -51,6 +63,7 @@ class PostsController extends Controller
 
     public function update(Post $post)
     {
+        $this->authorize('update', $post);
         $attributes = $this->validate(request(), [
             'slug' => 'required|unique:posts,slug,' . $post->slug . ',slug|regex:/^[A-z0-9-_]+$/i',
             'title' => 'required|min:5|max:100',
@@ -83,6 +96,7 @@ class PostsController extends Controller
 
     public function destroy(Post $post)
     {
+        $this->authorize('delete', $post);
         $post->delete();
         \Session::flash('message', 'Статья успешно удалена');
         return redirect('/posts');
@@ -91,6 +105,7 @@ class PostsController extends Controller
 
     public function edit(Post $post)
     {
+        $this->authorize('update', $post);
         $title = 'Редактирование статьи: ' . $post->getRouteKey();
         return view('posts.edit', compact('title', 'post'));
     }

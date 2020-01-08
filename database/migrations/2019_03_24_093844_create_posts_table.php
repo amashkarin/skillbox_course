@@ -21,6 +21,8 @@ class CreatePostsTable extends Migration
             $table->string('description');
             $table->text('body');
             $table->boolean('published')->default(false);
+            $table->unsignedInteger('owner_id');
+            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -13,4 +13,9 @@ class Post extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function owner()
+    {
+        $this->hasOne(User::class, 'owner_id');
+    }
 }
