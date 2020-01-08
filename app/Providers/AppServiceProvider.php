@@ -8,6 +8,16 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        //
+    }
+
+    /**
      * Bootstrap any application services.
      *
      * @return void
@@ -17,15 +27,5 @@ class AppServiceProvider extends ServiceProvider
         \View::composer('layout.aside', function($view) {
             $view->with('tagsCloud', Tag::has('posts')->get());
         });
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
     }
 }
