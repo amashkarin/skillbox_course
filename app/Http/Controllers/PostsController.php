@@ -39,9 +39,8 @@ class PostsController extends Controller
         $attributes['published'] = request('published') ? : 0;
         $attributes['owner_id'] = \Auth::id();
 
-        Post::create($attributes);
+        $post = Post::create($attributes);
         \Session::flash('message', 'Статья успешно добавлена');
-
 
         return redirect('/posts');
     }
