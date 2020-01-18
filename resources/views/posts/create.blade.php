@@ -5,23 +5,23 @@
         @csrf
         <div class="form-group">
             <label for="post_slug">Символьный код</label>
-            <input name="slug" type="text" class="form-control" id="post_slug" value="{{request('slug')}}">
+            <input name="slug" type="text" class="form-control" id="post_slug" value="{{old('slug', request('slug'))}}">
         </div>
         <div class="form-group">
             <label for="post_title">Название статьи</label>
-            <input name="title" type="text" class="form-control" id="post_title" value="{{request('title')}}">
+            <input name="title" type="text" class="form-control" id="post_title" value="{{old('title', request('title'))}}">
         </div>
         <div class="form-group">
             <label for="post_description">Краткое описание статьи</label>
-            <textarea name="description" class="form-control" id="post_description" rows="4">{{request('description')}}</textarea>
+            <textarea name="description" class="form-control" id="post_description" rows="4">{{old('description', request('description'))}}</textarea>
         </div>
         <div class="form-group">
             <label for="post_body">Детальное описание</label>
-            <textarea name="body" class="form-control" id="post_body" rows="10">{{request('body')}}</textarea>
+            <textarea name="body" class="form-control" id="post_body" rows="10">{{old('body', request('body'))}}</textarea>
         </div>
         <div class="form-group form-check">
             <input name="published" type="checkbox" class="form-check-input" id="post_published" value="1"
-            {{ request('published') == 1 ? ' checked':''}}>
+            {{ old('published', request('published')) == 1 ? ' checked':''}}>
             <label class="form-check-label" for="post_published">Опубликовано</label>
         </div>
         <button type="submit" class="btn btn-primary">Создать статью</button>

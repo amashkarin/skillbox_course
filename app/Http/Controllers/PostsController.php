@@ -30,16 +30,9 @@ class PostsController extends Controller
 
     public function store()
     {
-        $attributes = $this->validate(request(), [
-            'slug' => 'required|unique:posts|regex:/^[A-z0-9-_]+$/i',
-            'title' => 'required|min:5|max:100',
-            'description' => 'required|max:255',
-            'body' => 'required',
-        ]);
-        $attributes['published'] = request('published') ? : 0;
-        $attributes['owner_id'] = \Auth::id();
+        $attributes = $this->validatePost('store');
+        \Auth::user()->posts()->create($attributes);
 
-        $post = Post::create($attributes);
         \Session::flash('message', 'Статья успешно добавлена');
 
         return redirect('/posts');
@@ -63,13 +56,7 @@ class PostsController extends Controller
     public function update(Post $post)
     {
         $this->authorize('update', $post);
-        $attributes = $this->validate(request(), [
-            'slug' => 'required|unique:posts,slug,' . $post->slug . ',slug|regex:/^[A-z0-9-_]+$/i',
-            'title' => 'required|min:5|max:100',
-            'description' => 'required|max:255',
-            'body' => 'required',
-        ]);
-        $attributes['published'] = request('published') ? : 0;
+        $attributes = $this->validatePost('update', $post);
         $post->update($attributes);
 
         \Session::flash('message', 'Статья успешно обновлена');
@@ -107,5 +94,25 @@ class PostsController extends Controller
         $this->authorize('update', $post);
         $title = 'Редактирование статьи: ' . $post->getRouteKey();
         return view('posts.edit', compact('title', 'post'));
+    }
+
+
+    public function validatePost($method, $post = null)
+    {
+        $rules = [
+            'slug' => 'required|regex:/^[A-z0-9-_]+$/i|unique:posts,slug',
+            'title' => 'required|min:5|max:100',
+            'description' => 'required|max:255',
+            'body' => 'required',
+        ];
+
+        if ($method == 'update') {
+            $rules['slug'] .= ',' . $post->slug . ',slug';
+        }
+
+        $attributes = $this->validate(request(), $rules);
+        $attributes['published'] = request('published') ? : 0;
+
+        return $attributes;
     }
 }
