@@ -11,11 +11,11 @@
 |
 */
 
+Auth::routes();
 
+Route::get('/posts/tags/{tag}', 'TagsController@index');
+Route::resource('posts', 'PostsController');
 Route::get('/', 'PostsController@index');
-Route::get('/posts/create', 'PostsController@create');
-Route::post('/posts', 'PostsController@store');
-Route::get('/posts/{post}', 'PostsController@show');
 
 Route::get('/about', function () {
     $title = 'О нас';
@@ -25,4 +25,5 @@ Route::get('/about', function () {
 Route::get('/admin/feedback', 'FeedbackController@index');
 Route::get('/contacts', 'FeedbackController@create');
 Route::post('/contacts', 'FeedbackController@store');
+
 
