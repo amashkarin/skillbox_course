@@ -1,0 +1,33 @@
+version: '3.3'
+
+networks:
+  laravel:
+
+services:
+
+  php:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./
+    env_file:
+      - .env
+    ports:
+      - 80:8000
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - laravel
+
+  mysql:
+    image: mysql:8.0.26
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: skillbox_db
+      MYSQL_USER: skillbox
+      MYSQL_PASSWORD: skillbox
+    ports:
+      - 3306:3306
+    volumes:
+      - ../skillbox_db:/var/lib/mysql
+    networks:
+      - laravel
