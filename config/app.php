@@ -2,6 +2,7 @@
 
 return [
 
+    'admin_email' => getenv('ADMIN_EMAIL', 'admin@test.com'),
     /*
     |--------------------------------------------------------------------------
     | Application Name
