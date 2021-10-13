@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,17 +16,17 @@
 
 Auth::routes();
 
-Route::get('/posts/tags/{tag}', 'TagsController@index');
-Route::resource('posts', 'PostsController');
-Route::get('/', 'PostsController@index');
+Route::get('/posts/tags/{tag}', 'App\Http\Controllers\TagsController@index');
+Route::resource('posts', 'App\Http\Controllers\PostsController');
+Route::get('/', 'App\Http\Controllers\PostsController@index');
 
 Route::get('/about', function () {
     $title = 'О нас';
     return view('layout.master', compact('title'));
 });
 
-Route::get('/admin/feedback', 'FeedbackController@index');
-Route::get('/contacts', 'FeedbackController@create');
-Route::post('/contacts', 'FeedbackController@store');
+Route::get('/admin/feedback', 'App\Http\Controllers\FeedbackController@index');
+Route::get('/contacts', 'App\Http\Controllers\FeedbackController@create');
+Route::post('/contacts', 'App\Http\Controllers\FeedbackController@store');
 
 

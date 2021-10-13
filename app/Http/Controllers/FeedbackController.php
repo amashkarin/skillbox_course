@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Feedback;
+use App\Models\Feedback;
 
 
 class FeedbackController extends Controller

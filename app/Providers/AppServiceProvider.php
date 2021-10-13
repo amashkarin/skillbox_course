@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Tag;
+use App\Models\Tag;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
