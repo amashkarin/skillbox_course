@@ -2,20 +2,11 @@
 
 namespace App\Providers;
 
+use App\Tag;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
-    }
-
     /**
      * Register any application services.
      *
@@ -24,5 +15,17 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        \View::composer('layout.aside', function($view) {
+            $view->with('tagsCloud', Tag::has('posts')->get());
+        });
     }
 }
