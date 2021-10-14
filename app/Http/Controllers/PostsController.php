@@ -97,7 +97,7 @@ class PostsController extends Controller
 
         $post->tags()->sync($syncIds);
 
-        $redirectUrl = Auth::user()->isAdmin() ? '/admin/posts/' : '/posts/' . $post->getRouteKey();
+        $redirectUrl = Auth::user()->isAdmin() ? route('admin.posts') : route('posts.show', $post->getRouteKey());
         return redirect($redirectUrl);
 
     }

@@ -13,11 +13,11 @@ class AdminSectionController extends Controller
         $routes = [
             [
                 'title' => 'Управление статьями',
-                'url' => '/admin/posts'
+                'url' => \route('admin.posts')
             ],
             [
                 'title' => 'Обратная связь',
-                'url' => '/admin/feedback'
+                'url' => \route('admin.feedback')
             ],
         ];
         return view('admin.index', compact('title', 'routes'));

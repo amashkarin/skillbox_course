@@ -21,8 +21,8 @@
                     <td>{{ $post->published ? 'Да' : 'Нет' }}</td>
                     <td>{{ $post->owner->name }}</td>
                     <td>
-                        <a href="/admin/posts/{{ $post->getRouteKey() }}/edit" class="btn btn-primary">Изменить</a>
-                        <a href="/admin/posts/{{ $post->getRouteKey() }}/{{ $post->published ? 'unpublish' : 'publish' }}" class="btn btn-outline-info">{{ $post->published ? 'Снять с публикации' : 'Опубликовать' }}</a>
+                        <a href="{{ route('admin.post.edit', $post->getRouteKey()) }}" class="btn btn-primary">Изменить</a>
+                        <a href="{{ $post->published ? route('admin.post.unpublish', $post->getRouteKey()) : route('admin.post.publish', $post->getRouteKey()) }}" class="btn btn-outline-info">{{ $post->published ? 'Снять с публикации' : 'Опубликовать' }}</a>
                     </td>
                 </tr>
             @endforeach
