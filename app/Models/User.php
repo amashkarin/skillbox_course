@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Role::class);
     }
+
+    public function isAdmin()
+    {
+        return $this->role_id == Role::ADMIN_ROLE_ID;
+    }
 }

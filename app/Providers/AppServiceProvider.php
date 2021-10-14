@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Role;
 use App\Models\Tag;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +29,13 @@ class AppServiceProvider extends ServiceProvider
     {
         \View::composer('layout.aside', function($view) {
             $view->with('tagsCloud', Tag::has('posts')->get());
+        });
+
+        \Blade::if('admin', function () {
+            if (Auth::guest()) {
+                return false;
+            }
+            return Auth::user()->isAdmin();
         });
     }
 }
