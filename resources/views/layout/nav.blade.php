@@ -5,7 +5,7 @@
         <a class="p-2 text-muted" href="/contacts">Контакты</a>
         <a class="p-2 text-muted" href="/posts/create">Создать статью</a>
         @admin
-            <a class="p-2 text-muted" href="/admin/feedback">Админ. раздел</a>
+            <a class="p-2 text-muted" href="/admin">Админ. раздел</a>
         @endadmin
     </nav>
 </div>

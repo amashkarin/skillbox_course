@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Auth;
 
 class PostsController extends Controller
 {
@@ -27,6 +28,27 @@ class PostsController extends Controller
         return view('posts.index', compact('title', 'posts'));
     }
 
+    public function adminList()
+    {
+        $title = 'Управление статьями';
+        $posts = Post::all();
+        return view('posts.admin_list', compact('title', 'posts'));
+    }
+
+    public function publish(Post $post)
+    {
+        $post->published = true;
+        $post->save();
+        return redirect('/admin/posts');
+    }
+
+
+    public function unpublish(Post $post)
+    {
+        $post->published = false;
+        $post->save();
+        return redirect('/admin/posts');
+    }
 
     public function store()
     {
@@ -75,7 +97,8 @@ class PostsController extends Controller
 
         $post->tags()->sync($syncIds);
 
-        return redirect('/posts/' . $post->getRouteKey());
+        $redirectUrl = Auth::user()->isAdmin() ? '/admin/posts/' : '/posts/' . $post->getRouteKey();
+        return redirect($redirectUrl);
 
     }
 

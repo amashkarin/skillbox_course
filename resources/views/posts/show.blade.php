@@ -10,7 +10,7 @@
         @method('DELETE')
         @csrf
         @can('update', $post)
-            <a class="btn btn-secondary" href="/posts/{{$post->getRouteKey()}}/edit">Изменить</a>
+            <a class="btn btn-secondary" href="{{ Auth::user()->isAdmin() ? '/admin' : '' }}/posts/{{$post->getRouteKey()}}/edit">Изменить</a>
         @endcan
         @can('delete', $post)
             <button class="btn btn-danger" type="submit">Удалить</button>

@@ -25,7 +25,15 @@ Route::get('/about', function () {
     return view('layout.master', compact('title'));
 });
 
-Route::get('/admin/feedback', 'App\Http\Controllers\FeedbackController@index');
+Route::group(['middleware' => 'App\Http\Middleware\Admin'], function() {
+    Route::get('/admin', 'App\Http\Controllers\AdminSectionController@index');
+    Route::get('/admin/feedback', 'App\Http\Controllers\FeedbackController@index');
+    Route::get('/admin/posts', 'App\Http\Controllers\PostsController@adminList');
+    Route::get('/admin/posts/{post}/publish', 'App\Http\Controllers\PostsController@publish');
+    Route::get('/admin/posts/{post}/unpublish', 'App\Http\Controllers\PostsController@unpublish');
+    Route::get('/admin/posts/{post}/edit', 'App\Http\Controllers\PostsController@edit');
+});
+
 Route::get('/contacts', 'App\Http\Controllers\FeedbackController@create');
 Route::post('/contacts', 'App\Http\Controllers\FeedbackController@store');
 
