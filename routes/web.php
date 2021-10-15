@@ -18,12 +18,12 @@ Auth::routes();
 
 Route::get('/posts/tags/{tag}', 'App\Http\Controllers\TagsController@index');
 Route::resource('posts', 'App\Http\Controllers\PostsController');
-Route::get('/', 'App\Http\Controllers\PostsController@index');
+Route::get('/', 'App\Http\Controllers\PostsController@index')->name('home');
 
 Route::get('/about', function () {
     $title = 'О нас';
     return view('layout.master', compact('title'));
-});
+})->name('about');
 
 Route::group(['middleware' => 'App\Http\Middleware\Admin'], function() {
     Route::get('/admin', 'App\Http\Controllers\AdminSectionController@index')->name('admin');
@@ -34,7 +34,7 @@ Route::group(['middleware' => 'App\Http\Middleware\Admin'], function() {
     Route::get('/admin/posts/{post}/edit', 'App\Http\Controllers\PostsController@edit')->name('admin.post.edit');
 });
 
-Route::get('/contacts', 'App\Http\Controllers\FeedbackController@create');
+Route::get('/contacts', 'App\Http\Controllers\FeedbackController@create')->name('contacts');
 Route::post('/contacts', 'App\Http\Controllers\FeedbackController@store');
 
 

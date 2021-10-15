@@ -39,7 +39,7 @@ class PostsController extends Controller
     {
         $post->published = true;
         $post->save();
-        return redirect('/admin/posts');
+        return redirect(route('admin.posts'));
     }
 
 
@@ -47,7 +47,7 @@ class PostsController extends Controller
     {
         $post->published = false;
         $post->save();
-        return redirect('/admin/posts');
+        return redirect(route('admin.posts'));
     }
 
     public function store()
