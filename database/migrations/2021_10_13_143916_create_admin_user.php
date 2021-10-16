@@ -20,11 +20,12 @@ class CreateAdminUser extends Migration
             [
                 'name' => 'Admin',
                 'role_id' => Role::ADMIN_ROLE_ID,
-                'password' => Hash::make(\Illuminate\Support\Str::random(16)),
+//                'password' => Hash::make(\Illuminate\Support\Str::random(16)),
+                'password' => Hash::make('123123123'),
             ]
         );
 
-        Password::sendResetLink($adminUser->toArray());
+//        Password::sendResetLink($adminUser->toArray());
 
     }
 
