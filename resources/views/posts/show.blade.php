@@ -6,15 +6,15 @@
     @include('layout.tags', ['tags' => $post->tags])
     {{ $post->body }}
     <hr>
-    <form action="/posts/{{$post->getRouteKey()}}" method="post">
+    <form action="{{ route('posts.show', $post) }}" method="post">
         @method('DELETE')
         @csrf
         @can('update', $post)
-            <a class="btn btn-secondary" href="/posts/{{$post->getRouteKey()}}/edit">Изменить</a>
+            <a class="btn btn-secondary" href="{{ Auth::user()->isAdmin() ? route('admin.post.edit', $post) : route('posts.edit', $post) }}">Изменить</a>
         @endcan
         @can('delete', $post)
             <button class="btn btn-danger" type="submit">Удалить</button>
         @endcan
-        <a href="/">Венуться к списку статей</a>
+        <a href="{{ route('posts.index') }}">Венуться к списку статей</a>
     </form>
 @endsection

@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Mail\PostCreated;
 use App\Notifications\PostNotification;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
+    use HasFactory;
 
     protected static function boot()
     {
