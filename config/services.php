@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'push_all' => [
+        'id' => getenv('PUSH_ALL_API_ID', ''),
+        'key' => getenv('PUSH_ALL_API_KEY', ''),
+    ],
+
 ];

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use \App\Service\PushAllService;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,5 +37,4 @@ Route::group(['middleware' => 'App\Http\Middleware\Admin'], function() {
 
 Route::get('/contacts', 'App\Http\Controllers\FeedbackController@create')->name('contacts');
 Route::post('/contacts', 'App\Http\Controllers\FeedbackController@store');
-
 
