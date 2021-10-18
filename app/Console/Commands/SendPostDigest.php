@@ -50,12 +50,11 @@ class SendPostDigest extends Command
         $startPeriodDate = (new Carbon())->subDays($daysAgo)->startOfDay();
         $endPeriodTime = (clone $startPeriodDate)->addDays($days)->endOfDay();
 
-        $emails = User::all()->pluck('email');
+        $emails = User::pluck('email');
 
-        $posts = Post::where('created_at', '>=', $startPeriodDate)
-            ->where('created_at', '<=', $endPeriodTime)
+        $posts = Post::whereBetween('created_at', [$startPeriodDate, $endPeriodTime])
             ->where('published', true)
-            ->orderByDesc('created_at')
+            ->latest()
             ->get();
 
         if ($posts->count() == 0) {
@@ -63,7 +62,9 @@ class SendPostDigest extends Command
             return Command::SUCCESS;
         }
 
-        \Mail::to($emails)->send(new PostsDigest($posts));
+        foreach ($emails as $email) {
+            \Mail::to($email)->send(new PostsDigest($posts));
+        }
         $this->info('Рассылка отправлена на адреса: ' . $emails->implode(','));
 
         return Command::SUCCESS;
