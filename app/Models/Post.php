@@ -32,8 +32,8 @@ class Post extends Model
             $post->history()->create([
                 'owner_id' => auth()->id(),
                 'timestamp' => $post->updated_at,
-                'before' => json_encode($before),
-                'after' => json_encode($after),
+                'before' => $before,
+                'after' => $after,
             ]);
         });
 

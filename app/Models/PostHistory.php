@@ -9,6 +9,10 @@ class PostHistory extends Model
 
     protected $guarded = [];
     public $timestamps = false;
+    protected $casts = [
+        'before' => 'array',
+        'after' => 'array',
+    ];
 
     public function post()
     {

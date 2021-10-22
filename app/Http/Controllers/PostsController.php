@@ -72,7 +72,8 @@ class PostsController extends Controller
     {
         $title = $post->title;
         $comments = $post->comments;
-        return view('posts.show', compact('title', 'post', 'comments'));
+        $history = $post->history;
+        return view('posts.show', compact('title', 'post', 'comments', 'history'));
     }
 
 
