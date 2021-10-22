@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Mail\PostCreated;
 use App\Notifications\PostNotification;
+use App\Service\PushAllService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
@@ -17,6 +18,9 @@ class Post extends Model
         static::created(function(Post $post){
 //            \Mail::to(\Config::get('mail.admin.email'))->send(new PostCreated($post));
             $post->owner->notify(new PostNotification($post, 'created'));
+
+            $pushAllService = resolve(PushAllService::class);
+            $pushAllService->sendPush('Создана новая статья', $post->title);
         });
 
         static::updated(function(Post $post){
