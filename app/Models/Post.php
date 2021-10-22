@@ -6,6 +6,7 @@ use App\Mail\PostCreated;
 use App\Notifications\PostNotification;
 use App\Service\PushAllService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Arr;
 
 class Post extends Model
 {
@@ -25,7 +26,17 @@ class Post extends Model
 
         static::updated(function(Post $post){
             $post->owner->notify(new PostNotification($post, 'updated'));
+
+            $after = $post->getDirty();
+            $before = Arr::only($post->getOriginal(), array_keys($after));
+            $post->history()->create([
+                'owner_id' => auth()->id(),
+                'timestamp' => $post->updated_at,
+                'before' => json_encode($before),
+                'after' => json_encode($after),
+            ]);
         });
+
 
         static::deleted(function(Post $post){
             $post->owner->notify(new PostNotification($post, 'deleted'));
@@ -50,7 +61,11 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class, 'post_id', 'id');
     }
 
+    public function history()
+    {
+        return $this->hasMany(PostHistory::class, 'post_id', 'id');
+    }
 }
