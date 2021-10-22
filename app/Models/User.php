@@ -57,4 +57,9 @@ class User extends Authenticatable
     {
         return $this->role_id == Role::ADMIN_ROLE_ID;
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

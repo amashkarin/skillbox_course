@@ -71,7 +71,8 @@ class PostsController extends Controller
     public function show(Post $post)
     {
         $title = $post->title;
-        return view('posts.show', compact('title', 'post'));
+        $comments = $post->comments;
+        return view('posts.show', compact('title', 'post', 'comments'));
     }
 
 

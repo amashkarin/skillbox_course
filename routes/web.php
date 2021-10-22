@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use \App\Service\PushAllService;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +18,10 @@ Auth::routes();
 
 Route::get('/posts/tags/{tag}', 'App\Http\Controllers\TagsController@index');
 Route::resource('posts', 'App\Http\Controllers\PostsController');
+
+Route::post('/posts/{post}/comment/add', \App\Http\Controllers\CommentsController::class . '@store')->middleware('auth')->name('post.comment.add');
+
+
 Route::get('/', 'App\Http\Controllers\PostsController@index')->name('home');
 
 Route::get('/about', function () {

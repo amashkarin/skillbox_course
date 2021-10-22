@@ -19,8 +19,8 @@ class Post extends Model
 //            \Mail::to(\Config::get('mail.admin.email'))->send(new PostCreated($post));
             $post->owner->notify(new PostNotification($post, 'created'));
 
-            $pushAllService = resolve(PushAllService::class);
-            $pushAllService->sendPush('Создана новая статья', $post->title);
+//            $pushAllService = resolve(PushAllService::class);
+//            $pushAllService->sendPush('Создана новая статья', $post->title);
         });
 
         static::updated(function(Post $post){
@@ -47,4 +47,10 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 }
