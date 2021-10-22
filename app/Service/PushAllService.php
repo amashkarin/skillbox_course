@@ -3,7 +3,7 @@
 namespace App\Service;
 
 
-use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 
 class PushAllService
@@ -38,14 +38,6 @@ class PushAllService
             'title' => $title,
         ];
 
-        $httpClient = new Client([
-            'base_uri' => $url
-        ]);
-
-        $response = $httpClient->post('', [
-            'form_params' => $sendData
-        ]);
-
-        return $response;
+        return Http::asForm()->post($url, $sendData)->throw();
     }
 }
