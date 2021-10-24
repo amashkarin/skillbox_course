@@ -19,7 +19,7 @@ Auth::routes();
 Route::get('/tags/{tag}', \App\Http\Controllers\TagsController::class . '@show')->name('tags.show');
 Route::resource('posts', 'App\Http\Controllers\PostsController');
 
-Route::post('/posts/{post}/comment/add', \App\Http\Controllers\CommentsController::class . '@store')->middleware('auth')->name('post.comment.add');
+Route::post('/posts/{post}/comment/add', \App\Http\Controllers\CommentsController::class . '@storePostComment')->middleware('auth')->name('post.comment.add');
 
 
 Route::get('/', 'App\Http\Controllers\PostsController@index')->name('home');
@@ -51,3 +51,4 @@ Route::post('/contacts', 'App\Http\Controllers\FeedbackController@store');
 
 Route::get('/news', \App\Http\Controllers\NewsController::class . '@index')->name('news');
 Route::get('/news/{newsItem}', \App\Http\Controllers\NewsController::class . '@show')->name('news.item');
+Route::post('/news/{newsItem}/comment/add', \App\Http\Controllers\CommentsController::class . '@storeNewsComment')->middleware('auth')->name('news.comment.add');
