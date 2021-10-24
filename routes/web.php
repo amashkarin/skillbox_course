@@ -36,8 +36,18 @@ Route::group(['middleware' => 'App\Http\Middleware\Admin'], function() {
     Route::get('/admin/posts/{post}/publish', 'App\Http\Controllers\PostsController@publish')->name('admin.post.publish');
     Route::get('/admin/posts/{post}/unpublish', 'App\Http\Controllers\PostsController@unpublish')->name('admin.post.unpublish');
     Route::get('/admin/posts/{post}/edit', 'App\Http\Controllers\PostsController@edit')->name('admin.post.edit');
+    Route::get('/admin/news', \App\Http\Controllers\NewsController::class . '@adminList')->name('admin.news');
+    Route::get('/admin/news/create', \App\Http\Controllers\NewsController::class . '@create')->name('news.item.create');
+    Route::post('/admin/news/create', \App\Http\Controllers\NewsController::class . '@store')->name('news.item.create');
+    Route::get('/admin/news/{newsItem}/edit', \App\Http\Controllers\NewsController::class . '@edit')->name('news.item.edit');
+    Route::put('/admin/news/{newsItem}', \App\Http\Controllers\NewsController::class . '@update')->name('news.item.update');
+    Route::delete('/admin/news/{newsItem}', \App\Http\Controllers\NewsController::class . '@destroy')->name('news.item.destroy');
+
 });
 
 Route::get('/contacts', 'App\Http\Controllers\FeedbackController@create')->name('contacts');
 Route::post('/contacts', 'App\Http\Controllers\FeedbackController@store');
 
+
+Route::get('/news', \App\Http\Controllers\NewsController::class . '@index')->name('news');
+Route::get('/news/{newsItem}', \App\Http\Controllers\NewsController::class . '@show')->name('news.item');

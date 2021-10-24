@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Role;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
@@ -37,5 +38,7 @@ class AppServiceProvider extends ServiceProvider
             }
             return Auth::user()->isAdmin();
         });
+
+        Paginator::useBootstrap();
     }
 }

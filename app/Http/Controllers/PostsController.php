@@ -24,14 +24,14 @@ class PostsController extends Controller
     public function index()
     {
         $title = 'Список статей';
-        $posts = Post::where('published', true)->with('tags')->latest()->get();
+        $posts = Post::where('published', true)->with('tags')->latest()->paginate(10);
         return view('posts.index', compact('title', 'posts'));
     }
 
     public function adminList()
     {
         $title = 'Управление статьями';
-        $posts = Post::all();
+        $posts = Post::latest()->paginate(20);
         return view('posts.admin_list', compact('title', 'posts'));
     }
 

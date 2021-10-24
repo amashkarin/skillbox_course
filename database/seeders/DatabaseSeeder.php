@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
 //        \App\Models\User::factory(3)->create();
 //        \App\Models\Post::factory(21)->create();
         $this->call(AuthorsAndArticlesSeeder::class);
+        $this->call(NewsSeeder::class);
     }
 }
