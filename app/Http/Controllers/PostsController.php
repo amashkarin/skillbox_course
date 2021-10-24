@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Tag;
+use App\Service\TaggableHelper;
 use Illuminate\Support\Facades\Auth;
 
 class PostsController extends Controller
@@ -54,7 +55,8 @@ class PostsController extends Controller
     {
         $attributes = $this->validatePost('store');
         $post = \Auth::user()->posts()->create($attributes);
-        $this->syncTagsFromRequest($post);
+        $taggableHelper = resolve(TaggableHelper::class);
+        $taggableHelper->syncPostTagsFromRequest($post);
 
         \Session::flash('message', 'Статья успешно добавлена');
 
@@ -84,7 +86,8 @@ class PostsController extends Controller
 
         \Session::flash('message', 'Статья успешно обновлена');
 
-        $this->syncTagsFromRequest($post);
+        $taggableHelper = resolve(TaggableHelper::class);
+        $taggableHelper->syncPostTagsFromRequest($post);
 
         $redirectUrl = Auth::user()->isAdmin() ? route('admin.posts') : route('posts.show', $post->getRouteKey());
         return redirect($redirectUrl);
@@ -126,21 +129,5 @@ class PostsController extends Controller
         $attributes['published'] = request('published') ? : 0;
 
         return $attributes;
-    }
-
-    public function syncTagsFromRequest(Post $post)
-    {
-        $postTags = $post->tags->keyBy('name');
-        $newTags = collect(explode(',', request('tags')))->keyBy(function ($item) {
-            return trim($item);
-        });
-        $syncIds = $postTags->intersectByKeys($newTags)->pluck('id')->toArray();
-
-        $tagsToCreate = $newTags->diffKeys($postTags);
-        foreach ($tagsToCreate as $tagName){
-            $tag = Tag::firstOrCreate(['name' => $tagName]);
-            $syncIds[] = $tag->id;
-        }
-        $post->tags()->sync($syncIds);
     }
 }
