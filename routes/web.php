@@ -52,3 +52,6 @@ Route::post('/contacts', 'App\Http\Controllers\FeedbackController@store');
 Route::get('/news', \App\Http\Controllers\NewsController::class . '@index')->name('news');
 Route::get('/news/{newsItem}', \App\Http\Controllers\NewsController::class . '@show')->name('news.item');
 Route::post('/news/{newsItem}/comment/add', \App\Http\Controllers\CommentsController::class . '@storeNewsComment')->middleware('auth')->name('news.comment.add');
+
+
+Route::get('/statistic', \App\Http\Controllers\StatisticController::class . '@index')->name('statistic');
