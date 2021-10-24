@@ -53,7 +53,8 @@ class PostsController extends Controller
     public function store()
     {
         $attributes = $this->validatePost('store');
-        \Auth::user()->posts()->create($attributes);
+        $post = \Auth::user()->posts()->create($attributes);
+        $this->syncTagsFromRequest($post);
 
         \Session::flash('message', 'Статья успешно добавлена');
 
@@ -85,19 +86,7 @@ class PostsController extends Controller
 
         \Session::flash('message', 'Статья успешно обновлена');
 
-        $postTags = $post->tags->keyBy('name');
-        $newTags = collect(explode(',', request('tags')))->keyBy(function ($item) {
-            return $item;
-        });
-        $syncIds = $postTags->intersectByKeys($newTags)->pluck('id')->toArray();
-
-        $tagsToCreate = $newTags->diffKeys($postTags);
-        foreach ($tagsToCreate as $tagName){
-            $tag = Tag::firstOrCreate(['name' => $tagName]);
-            $syncIds[] = $tag->id;
-        }
-
-        $post->tags()->sync($syncIds);
+        $this->syncTagsFromRequest($post);
 
         $redirectUrl = Auth::user()->isAdmin() ? route('admin.posts') : route('posts.show', $post->getRouteKey());
         return redirect($redirectUrl);
@@ -139,5 +128,21 @@ class PostsController extends Controller
         $attributes['published'] = request('published') ? : 0;
 
         return $attributes;
+    }
+
+    public function syncTagsFromRequest(Post $post)
+    {
+        $postTags = $post->tags->keyBy('name');
+        $newTags = collect(explode(',', request('tags')))->keyBy(function ($item) {
+            return trim($item);
+        });
+        $syncIds = $postTags->intersectByKeys($newTags)->pluck('id')->toArray();
+
+        $tagsToCreate = $newTags->diffKeys($postTags);
+        foreach ($tagsToCreate as $tagName){
+            $tag = Tag::firstOrCreate(['name' => $tagName]);
+            $syncIds[] = $tag->id;
+        }
+        $post->tags()->sync($syncIds);
     }
 }

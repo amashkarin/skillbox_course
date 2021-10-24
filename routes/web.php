@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 
-Route::get('/posts/tags/{tag}', 'App\Http\Controllers\TagsController@index');
+Route::get('/tags/{tag}', \App\Http\Controllers\TagsController::class . '@show')->name('tags.show');
 Route::resource('posts', 'App\Http\Controllers\PostsController');
 
 Route::post('/posts/{post}/comment/add', \App\Http\Controllers\CommentsController::class . '@store')->middleware('auth')->name('post.comment.add');

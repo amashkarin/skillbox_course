@@ -16,6 +16,10 @@
             <label for="post_body">Текст новости</label>
             <textarea name="body" class="form-control" id="post_body" rows="10">{{old('body', $newsItem->body)}}</textarea>
         </div>
+        <div class="form-group">
+            <label for="post_tags">Теги</label>
+            <input type="text" name="tags" class="form-control" id="post_tags" value="{{old('tags', $newsItem->tags->pluck('name')->implode(','))}}">
+        </div>
         <div class="form-group form-check">
             <input name="published" type="checkbox" class="form-check-input" id="post_published" value="1"
             {{ old('published', $newsItem->published) == 1 ? ' checked' : '' }}>

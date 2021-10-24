@@ -3,16 +3,14 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Post;
 use App\Models\Tag;
 
 class TagsController extends Controller
 {
-
-    public function index(Tag $tag)
+    public function show(Tag $tag)
     {
-        $title = 'Список статей по тегу "' . $tag->name . '"';
-        $posts = $tag->posts()->with('tags')->get();
-        return view('posts.index', compact('title', 'posts'));
+        $title = 'Список сущностей по тегу "' . $tag->name . '"';
+        $tag->load(['posts', 'news']);
+        return view('tags.show', compact('title', 'tag'));
     }
 }

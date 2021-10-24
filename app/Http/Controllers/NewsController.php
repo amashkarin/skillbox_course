@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\NewsItem;
+use App\Models\Tag;
 
 class NewsController extends Controller
 {
@@ -38,6 +39,7 @@ class NewsController extends Controller
     {
         $data = $this->validatePost($newsItem);
         $newsItem->updateOrFail($data);
+        $this->syncTagsFromRequest($newsItem);
 
         return redirect(route('admin.news'));
     }
@@ -46,7 +48,9 @@ class NewsController extends Controller
     public function store()
     {
         $data = $this->validatePost();
-        (new NewsItem($data))->saveOrFail();
+        $newsItem = new NewsItem($data);
+        $newsItem->saveOrFail();
+        $this->syncTagsFromRequest($newsItem);
 
         return redirect(route('admin.news'));
     }
@@ -73,5 +77,21 @@ class NewsController extends Controller
         $attributes['published'] = request('published') ?: 0;
 
         return $attributes;
+    }
+
+    public function syncTagsFromRequest(NewsItem $newsItem)
+    {
+        $newsItemTags = $newsItem->tags->keyBy('name');
+        $newTags = collect(explode(',', request('tags')))->keyBy(function ($item) {
+            return trim($item);
+        });
+        $syncIds = $newsItemTags->intersectByKeys($newTags)->pluck('id')->toArray();
+
+        $tagsToCreate = $newTags->diffKeys($newsItemTags);
+        foreach ($tagsToCreate as $tagName){
+            $tag = Tag::firstOrCreate(['name' => $tagName]);
+            $syncIds[] = $tag->id;
+        }
+        $newsItem->tags()->sync($syncIds);
     }
 }
