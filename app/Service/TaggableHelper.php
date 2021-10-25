@@ -3,24 +3,12 @@
 namespace App\Service;
 
 
-use App\Models\NewsItem;
-use App\Models\Post;
+use App\Contracts\Taggable;
 use App\Models\Tag;
 
 class TaggableHelper
 {
-
-    public function syncNewsItemTagsFromRequest(NewsItem $newsItem)
-    {
-        $this->syncTagsFromRequest($newsItem);
-    }
-
-    public function syncPostTagsFromRequest(Post $post)
-    {
-        $this->syncTagsFromRequest($post);
-    }
-
-    public function syncTagsFromRequest($taggable)
+    public function syncTagsFromRequest(Taggable $taggable)
     {
         $taggableTags = $taggable->tags->keyBy('name');
         $newTags = collect(explode(',', request('tags')))->keyBy(function ($item) {

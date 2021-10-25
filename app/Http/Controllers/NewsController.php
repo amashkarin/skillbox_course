@@ -36,24 +36,22 @@ class NewsController extends Controller
     }
 
 
-    public function update(NewsItem $newsItem)
+    public function update(NewsItem $newsItem, TaggableHelper $taggableHelper)
     {
         $data = $this->validatePost($newsItem);
         $newsItem->updateOrFail($data);
-        $taggableHelper = resolve(TaggableHelper::class);
-        $taggableHelper->syncNewsItemTagsFromRequest($newsItem);
+        $taggableHelper->syncTagsFromRequest($newsItem);
 
         return redirect(route('admin.news'));
     }
 
 
-    public function store()
+    public function store(TaggableHelper $taggableHelper)
     {
         $data = $this->validatePost();
         $newsItem = new NewsItem($data);
         $newsItem->saveOrFail();
-        $taggableHelper = resolve(TaggableHelper::class);
-        $taggableHelper->syncNewsItemTagsFromRequest($newsItem);
+        $taggableHelper->syncTagsFromRequest($newsItem);
 
         return redirect(route('admin.news'));
     }

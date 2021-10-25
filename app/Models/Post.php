@@ -2,15 +2,20 @@
 
 namespace App\Models;
 
+use App\Contracts\Commentable;
+use App\Contracts\Taggable;
 use App\Mail\PostCreated;
 use App\Notifications\PostNotification;
 use App\Service\PushAllService;
+use App\Traits\HasComments;
+use App\Traits\HasTags;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Arr;
 
-class Post extends Model
+
+class Post extends Model implements Taggable, Commentable
 {
-    use HasFactory;
+    use HasFactory, HasTags, HasComments;
 
     protected static function boot()
     {
@@ -49,19 +54,9 @@ class Post extends Model
         return 'slug';
     }
 
-    public function tags()
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
-    }
-
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
-    }
-
-    public function comments()
-    {
-        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public function history()

@@ -51,12 +51,11 @@ class PostsController extends Controller
         return redirect(route('admin.posts'));
     }
 
-    public function store()
+    public function store(TaggableHelper $taggableHelper)
     {
         $attributes = $this->validatePost('store');
         $post = \Auth::user()->posts()->create($attributes);
-        $taggableHelper = resolve(TaggableHelper::class);
-        $taggableHelper->syncPostTagsFromRequest($post);
+        $taggableHelper->syncTagsFromRequest($post);
 
         \Session::flash('message', 'Статья успешно добавлена');
 
@@ -78,7 +77,7 @@ class PostsController extends Controller
     }
 
 
-    public function update(Post $post)
+    public function update(Post $post, TaggableHelper $taggableHelper)
     {
         $this->authorize('update', $post);
         $attributes = $this->validatePost('update', $post);
@@ -86,8 +85,7 @@ class PostsController extends Controller
 
         \Session::flash('message', 'Статья успешно обновлена');
 
-        $taggableHelper = resolve(TaggableHelper::class);
-        $taggableHelper->syncPostTagsFromRequest($post);
+        $taggableHelper->syncTagsFromRequest($post);
 
         $redirectUrl = Auth::user()->isAdmin() ? route('admin.posts') : route('posts.show', $post->getRouteKey());
         return redirect($redirectUrl);

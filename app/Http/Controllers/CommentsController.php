@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Commentable;
 use App\Models\Comment;
 use App\Models\NewsItem;
 use App\Models\Post;
@@ -21,7 +22,7 @@ class CommentsController extends Controller
     }
 
 
-    public function store(Request $request, $commentable)
+    public function store(Request $request, Commentable $commentable)
     {
         $data = $request->validate([
             'body' => 'required'
