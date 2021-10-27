@@ -15,6 +15,10 @@
             <label for="post_body">Текст новости</label>
             <textarea name="body" class="form-control" id="post_body" rows="10">{{old('body', request('body'))}}</textarea>
         </div>
+        <div class="form-group">
+            <label for="post_tags">Теги</label>
+            <input type="text" name="tags" class="form-control" id="post_tags" value="{{old('tags', request('tags'))}}">
+        </div>
         <div class="form-group form-check">
             <input name="published" type="checkbox" class="form-check-input" id="post_published" value="1"
             {{ old('published', request('published')) == 1 ? ' checked':''}}>

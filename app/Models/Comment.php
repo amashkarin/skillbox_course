@@ -17,8 +17,8 @@ class Comment extends Model
         return $this->hasOne(User::class, 'id', 'owner_id');
     }
 
-    public function post()
+    public function commentable()
     {
-        return $this->hasOne(Post::class, 'id', 'post_id');
+        return $this->morphTo();
     }
 }

@@ -5,4 +5,9 @@
     </div>
     <h1>{{ $newsItem->title }}</h1>
     {{ $newsItem->body }}
+
+    @include('comments.block', [
+        'comments' => $newsItem->comments ?? [],
+        'formAction' => route('news.comment.add', $newsItem),
+    ])
 @endsection

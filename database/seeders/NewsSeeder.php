@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\NewsItem;
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
 class NewsSeeder extends Seeder
@@ -14,6 +15,10 @@ class NewsSeeder extends Seeder
      */
     public function run()
     {
-        NewsItem::factory(30, ['published' => true])->create();
+        $tags = Tag::factory(10)->create();
+
+        NewsItem::factory(30, ['published' => true])->afterCreating(function (NewsItem $newsItem) use ($tags) {
+            $newsItem->tags()->attach($tags->random(rand(1, 3)));
+        })->create();
     }
 }

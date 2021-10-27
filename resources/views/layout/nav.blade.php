@@ -4,6 +4,7 @@
         <a class="p-2 text-muted" href="{{ route('news') }}">Новости</a>
         <a class="p-2 text-muted" href="{{ route('about') }}">О нас</a>
         <a class="p-2 text-muted" href="{{ route('contacts') }}">Контакты</a>
+        <a class="p-2 text-muted" href="{{ route('statistic') }}">Статистика</a>
         <a class="p-2 text-muted" href="{{ route('posts.create') }}">Создать статью</a>
         @admin
             <a class="p-2 text-muted" href="{{ route('admin') }}">Админ. раздел</a>

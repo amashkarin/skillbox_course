@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Tag;
+use App\Service\TaggableHelper;
 use Illuminate\Support\Facades\Auth;
 
 class PostsController extends Controller
@@ -50,10 +51,11 @@ class PostsController extends Controller
         return redirect(route('admin.posts'));
     }
 
-    public function store()
+    public function store(TaggableHelper $taggableHelper)
     {
         $attributes = $this->validatePost('store');
-        \Auth::user()->posts()->create($attributes);
+        $post = \Auth::user()->posts()->create($attributes);
+        $taggableHelper->syncTagsFromRequest($post);
 
         \Session::flash('message', 'Статья успешно добавлена');
 
@@ -71,13 +73,11 @@ class PostsController extends Controller
     public function show(Post $post)
     {
         $title = $post->title;
-        $comments = $post->comments;
-        $history = $post->history;
-        return view('posts.show', compact('title', 'post', 'comments', 'history'));
+        return view('posts.show', compact('title', 'post'));
     }
 
 
-    public function update(Post $post)
+    public function update(Post $post, TaggableHelper $taggableHelper)
     {
         $this->authorize('update', $post);
         $attributes = $this->validatePost('update', $post);
@@ -85,19 +85,7 @@ class PostsController extends Controller
 
         \Session::flash('message', 'Статья успешно обновлена');
 
-        $postTags = $post->tags->keyBy('name');
-        $newTags = collect(explode(',', request('tags')))->keyBy(function ($item) {
-            return $item;
-        });
-        $syncIds = $postTags->intersectByKeys($newTags)->pluck('id')->toArray();
-
-        $tagsToCreate = $newTags->diffKeys($postTags);
-        foreach ($tagsToCreate as $tagName){
-            $tag = Tag::firstOrCreate(['name' => $tagName]);
-            $syncIds[] = $tag->id;
-        }
-
-        $post->tags()->sync($syncIds);
+        $taggableHelper->syncTagsFromRequest($post);
 
         $redirectUrl = Auth::user()->isAdmin() ? route('admin.posts') : route('posts.show', $post->getRouteKey());
         return redirect($redirectUrl);
