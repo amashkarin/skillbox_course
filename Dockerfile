@@ -1,7 +1,7 @@
 FROM php:8.0.3-fpm-buster
 
 
-RUN apt update && apt install -y git curl zip
+RUN apt update && apt install -y git curl zip supervisor
 
 RUN docker-php-ext-install pdo pdo_mysql
 
@@ -13,8 +13,8 @@ RUN set -x \
 && mv composer.phar /usr/local/bin/composer
 
 
+COPY ./supervisord.conf /etc/supervisor/supervisord.conf
+COPY ./supervisor-laravel.conf /etc/supervisor/conf.d/laravel.conf
 
 
-
-CMD php -S 0.0.0.0:8000 -t /var/www/html/public -c /usr/local/etc/php/php.ini-development
-
+CMD supervisord --nodaemon

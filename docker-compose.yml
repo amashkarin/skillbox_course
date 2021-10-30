@@ -15,8 +15,11 @@ services:
             - .env
         ports:
             - 80:8000
+            - 9001:9001
         volumes:
             - ./:/var/www/html
+#            - ./supervisord.conf:/etc/supervisor/supervisord.conf
+#            - ./supervisor-laravel.conf:/etc/supervisor/conf.d/laravel.conf
         networks:
             - laravel
 
