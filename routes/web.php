@@ -43,6 +43,10 @@ Route::group(['middleware' => 'App\Http\Middleware\Admin'], function() {
     Route::put('/admin/news/{newsItem}', \App\Http\Controllers\NewsController::class . '@update')->name('news.item.update');
     Route::delete('/admin/news/{newsItem}', \App\Http\Controllers\NewsController::class . '@destroy')->name('news.item.destroy');
 
+    Route::get('/admin/reports', \App\Http\Controllers\ReportsController::class . '@index')->name('admin.reports');
+    Route::get('/admin/reports/total', \App\Http\Controllers\ReportsController::class . '@showTotal')->name('admin.reports.total');
+    Route::post('/admin/reports/total', \App\Http\Controllers\ReportsController::class . '@createTotal')->name('admin.reports.total.create');
+
 });
 
 Route::get('/contacts', 'App\Http\Controllers\FeedbackController@create')->name('contacts');
