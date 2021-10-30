@@ -20,6 +20,10 @@ class AdminSectionController extends Controller
                 'url' => \route('admin.news')
             ],
             [
+                'title' => 'Управление отчетами',
+                'url' => \route('admin.reports')
+            ],
+            [
                 'title' => 'Обратная связь',
                 'url' => \route('admin.feedback')
             ],
