@@ -11,6 +11,8 @@ services:
             context: ./
         depends_on:
             - mysql
+            - redis
+            - laravel_echo_server
         env_file:
             - .env
         ports:
@@ -37,9 +39,35 @@ services:
         networks:
             - laravel
 
+    redis:
+        image: redis:6.2.6
+        ports:
+            - 6379:6379
+        networks:
+            - laravel
+
+    laravel_echo_server:
+        image: node:16-alpine3.11
+        working_dir: /app
+        ports:
+            - 6001:6001
+        volumes:
+            - ./:/app
+        command: ["node", "/app/node_modules/laravel-echo-server/bin/server.js", "start"]
+        networks:
+            - laravel
+
     node:
         image: node:16-alpine3.11
         working_dir: /app
         volumes:
             - ./:/app
         command: ["/bin/sh", "-c", "rm package-lock.json && npm install && npm run dev"]
+
+    watcher:
+        image: node:16-alpine3.11
+        user: root
+        working_dir: /app
+        volumes:
+            - ./:/app
+        command: ["/bin/sh", "-c", "npm run watch"]
