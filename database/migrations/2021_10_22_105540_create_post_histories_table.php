@@ -21,8 +21,8 @@ class CreatePostHistoriesTable extends Migration
             $table->json('before');
             $table->json('after');
 
-            $table->foreign('post_id')->references('id')->on('posts');
-            $table->foreign('owner_id')->references('id')->on('users');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

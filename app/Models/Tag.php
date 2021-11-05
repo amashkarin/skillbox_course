@@ -3,11 +3,12 @@
 namespace App\Models;
 
 
+use App\Traits\HasListCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tag extends Model
 {
-    use HasFactory;
+    use HasFactory, HasListCache;
 
     public function posts()
     {

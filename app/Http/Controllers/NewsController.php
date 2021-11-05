@@ -5,23 +5,37 @@ namespace App\Http\Controllers;
 use App\Models\NewsItem;
 use App\Models\Tag;
 use App\Service\TaggableHelper;
+use Illuminate\Pagination\Paginator;
 
 class NewsController extends Controller
 {
     public function index()
     {
-        $news = NewsItem::where('published', true)->latest()->paginate(10);
+        $pageSize = 10;
+        $sortField = 'created_at';
+        $sortDirection = 'desc';
+        $news = \Cache::tags([NewsItem::getListCacheTag()])->rememberForever(NewsItem::getListCacheKey([$pageSize, $sortField, $sortDirection]), function () use ($pageSize) {
+            return NewsItem::where('published', true)->latest()->paginate($pageSize);
+        });
+
         return view('news.index', compact('news'));
     }
 
     public function adminList()
     {
-        $news = NewsItem::latest()->paginate(20);
+        $pageSize = 20;
+        $sortField = 'created_at';
+        $sortDirection = 'desc';
+        $news = \Cache::tags([NewsItem::getListCacheTag()])->rememberForever(NewsItem::getListCacheKey([$pageSize, $sortField, $sortDirection]), function () use ($pageSize) {
+            return NewsItem::latest()->paginate($pageSize);
+        });
+
         return view('news.admin_list', compact('news'));
     }
 
-    public function show(NewsItem $newsItem)
+    public function show($slug)
     {
+        $newsItem = NewsItem::getByRouteKeyFromCache($slug);
         return view('news.show', compact('newsItem'));
     }
 

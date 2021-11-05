@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Tag;
+use App\Traits\HasItemCache;
+use App\Traits\HasListCache;
 
 class TagsController extends Controller
 {
-    public function show(Tag $tag)
+    use HasListCache, HasItemCache;
+
+    public function show($routeKey)
     {
+        $tag = Tag::getByRouteKeyFromCache($routeKey, ['posts', 'news']);
         $title = 'Список сущностей по тегу "' . $tag->name . '"';
-        $tag->load(['posts', 'news']);
         return view('tags.show', compact('title', 'tag'));
     }
 }

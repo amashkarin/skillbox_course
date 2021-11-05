@@ -29,7 +29,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         \View::composer('layout.aside', function($view) {
-            $view->with('tagsCloud', Tag::has('posts')->get());
+            $tagsCloud = \Cache::tags(Tag::getListCacheTag())->rememberForever(Tag::getListCacheKey(), function () {
+                return Tag::get();
+            });
+            $view->with('tagsCloud', $tagsCloud);
         });
 
         \Blade::if('admin', function () {

@@ -10,8 +10,13 @@ class FeedbackController extends Controller
 
     public function index()
     {
-        $title = 'Результаты заполнения формы контатов';
-        $results = Feedback::latest()->get();
+        $title = 'Результаты заполнения формы контактов';
+        $sortField = 'created_at';
+        $sortDirection = 'desc';
+        $results = \Cache::tags([Feedback::getListCacheTag()])->rememberForever(Feedback::getListCacheKey([$sortField, $sortDirection]), function () {
+            return Feedback::latest()->get();
+        });
+
         return view('contacts.index', compact('title', 'results'));
     }
 
