@@ -1,9 +1,13 @@
 FROM php:8.0.3-fpm-buster
 
 
-RUN apt update && apt install -y git curl zip supervisor
-
-RUN docker-php-ext-install pdo pdo_mysql
+RUN set -x \
+&& apt update \
+&& apt install -y git curl zip supervisor \
+&& pecl install -o -f redis \
+&& rm -rf /tmp/pear \
+&& docker-php-ext-enable redis \
+&& docker-php-ext-install pdo pdo_mysql
 
 RUN set -x \
 && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \

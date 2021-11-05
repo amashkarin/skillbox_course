@@ -59,3 +59,6 @@ Route::post('/news/{newsItem}/comment/add', \App\Http\Controllers\CommentsContro
 
 
 Route::get('/statistic', \App\Http\Controllers\StatisticController::class . '@index')->name('statistic');
+Route::get('/test', function () {
+   event(new \App\Events\PostUpdated('Boardcasting test'));
+});

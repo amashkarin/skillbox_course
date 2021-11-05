@@ -9,17 +9,25 @@
         "prod": "npm run production",
         "production": "mix --production"
     },
+    "dependencies": {
+        "laravel-echo-server": "^1.6.2"
+    },
     "devDependencies": {
         "axios": "^0.21",
         "bootstrap": "^4.6.0",
         "holderjs": "^2.9.9",
         "jquery": "^3.6.0",
+        "laravel-echo": "^1.11.3",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
-        "postcss": "^8.1.14",
         "popper.js": "^1.16.1",
+        "postcss": "^8.1.14",
         "resolve-url-loader": "^4.0.0",
         "sass": "^1.43.2",
-        "sass-loader": "^12.2.0"
+        "sass-loader": "^12.2.0",
+        "socket.io-client": "^2.4.0",
+        "vue": "^2.6.14",
+        "vue-loader": "^15.9.8",
+        "vue-template-compiler": "^2.6.14"
     }
 }

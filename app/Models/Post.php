@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Commentable;
 use App\Contracts\Taggable;
+use App\Events\PostUpdated;
 use App\Mail\PostCreated;
 use App\Notifications\PostNotification;
 use App\Service\PushAllService;
@@ -40,6 +41,8 @@ class Post extends Model implements Taggable, Commentable
                 'before' => $before,
                 'after' => $after,
             ]);
+
+            event(new PostUpdated($post, $after));
         });
 
 
