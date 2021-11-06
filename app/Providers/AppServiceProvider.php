@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Role;
 use App\Models\Tag;
 use App\Models\User;
+use App\Service\ModelCacheService;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
@@ -28,10 +29,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        \View::composer('layout.aside', function($view) {
-            $tagsCloud = \Cache::tags(Tag::getListCacheTag())->rememberForever(Tag::getListCacheKey(), function () {
-                return Tag::get();
-            });
+        \View::composer('layout.aside', function ($view) {
+
+            $modelCacheService = resolve(ModelCacheService::class);
+            /**
+             * @var ModelCacheService $modelCacheService
+             */
+            $tagModel = new Tag();
+            $tagsCloud = \Cache::tags($modelCacheService->getListCacheTag($tagModel))
+                ->rememberForever($modelCacheService->getListCacheKey($tagModel), function () {
+                    return Tag::get();
+                });
             $view->with('tagsCloud', $tagsCloud);
         });
 

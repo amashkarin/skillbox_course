@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Tag;
-use App\Traits\HasItemCache;
-use App\Traits\HasListCache;
+
 
 class TagsController extends Controller
 {
-    use HasListCache, HasItemCache;
 
     public function show($routeKey)
     {

@@ -9,8 +9,6 @@ use App\Mail\PostCreated;
 use App\Notifications\PostNotification;
 use App\Service\PushAllService;
 use App\Traits\HasComments;
-use App\Traits\HasItemCache;
-use App\Traits\HasListCache;
 use App\Traits\HasTags;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Arr;
@@ -18,7 +16,7 @@ use Illuminate\Support\Arr;
 
 class Post extends Model implements Taggable, Commentable
 {
-    use HasFactory, HasTags, HasComments, HasListCache, HasItemCache;
+    use HasFactory, HasTags, HasComments;
 
     protected static function boot()
     {

@@ -4,38 +4,51 @@ namespace App\Http\Controllers;
 
 use App\Models\NewsItem;
 use App\Models\Tag;
+use App\Service\ModelCacheService;
 use App\Service\TaggableHelper;
 use Illuminate\Pagination\Paginator;
 
 class NewsController extends Controller
 {
-    public function index()
+    public function index(ModelCacheService $modelCacheService)
     {
         $pageSize = 10;
         $sortField = 'created_at';
         $sortDirection = 'desc';
-        $news = \Cache::tags([NewsItem::getListCacheTag()])->rememberForever(NewsItem::getListCacheKey([$pageSize, $sortField, $sortDirection]), function () use ($pageSize) {
-            return NewsItem::where('published', true)->latest()->paginate($pageSize);
-        });
+        $model = new NewsItem();
+        $news = \Cache::tags($modelCacheService->getListCacheTag($model))
+            ->rememberForever($modelCacheService->getListCacheKey($model, [
+                $pageSize,
+                $sortField,
+                $sortDirection,
+            ]), function () use ($pageSize) {
+                return NewsItem::where('published', true)->latest()->paginate($pageSize);
+            });
 
         return view('news.index', compact('news'));
     }
 
-    public function adminList()
+    public function adminList(ModelCacheService $modelCacheService)
     {
         $pageSize = 20;
         $sortField = 'created_at';
         $sortDirection = 'desc';
-        $news = \Cache::tags([NewsItem::getListCacheTag()])->rememberForever(NewsItem::getListCacheKey([$pageSize, $sortField, $sortDirection]), function () use ($pageSize) {
-            return NewsItem::latest()->paginate($pageSize);
-        });
+        $model = new NewsItem();
+        $news = \Cache::tags($modelCacheService->getListCacheTag($model))
+            ->rememberForever($modelCacheService->getListCacheKey($model, [
+                $pageSize,
+                $sortField,
+                $sortDirection,
+            ]), function () use ($pageSize) {
+                return NewsItem::latest()->paginate($pageSize);
+            });
 
         return view('news.admin_list', compact('news'));
     }
 
-    public function show($slug)
+    public function show($routeKey)
     {
-        $newsItem = NewsItem::getByRouteKeyFromCache($slug);
+        $newsItem = NewsItem::getByRouteKeyFromCache($routeKey);
         return view('news.show', compact('newsItem'));
     }
 

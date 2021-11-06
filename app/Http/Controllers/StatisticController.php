@@ -5,48 +5,52 @@ namespace App\Http\Controllers;
 use App\Models\NewsItem;
 use App\Models\Post;
 use App\Models\User;
+use App\Service\ModelCacheService;
 
 
 class StatisticController extends Controller
 {
-    public function index()
+    public function index(ModelCacheService $modelCacheService)
     {
         $title = 'Сатистика сайта';
 
-        $postCount = \Cache::tags(Post::getListCacheTag())->rememberForever('postCount', function () {
+        $postModel = new Post();
+        $newsModel = new NewsItem();
+
+        $postCount = \Cache::tags($modelCacheService->getListCacheTag($postModel))->rememberForever('postCount', function () {
             return Post::count('id');
         });
 
-        $newsCount = \Cache::tags(NewsItem::getListCacheTag())->rememberForever('newsCount', function () {
+        $newsCount = \Cache::tags($modelCacheService->getListCacheTag($newsModel))->rememberForever('newsCount', function () {
             return NewsItem::count('id');
         });
 
-        $mostWritableAuthor = \Cache::tags(Post::getListCacheTag())->rememberForever('maxLengthPost', function () {
+        $mostWritableAuthor = \Cache::tags($modelCacheService->getListCacheTag($postModel))->rememberForever('maxLengthPost', function () {
             return User::withCount('posts')->orderByDesc('posts_count')->first()->name;
         });
 
-        $maxLengthPost = \Cache::tags(Post::getListCacheTag())->rememberForever('maxLengthPost', function () {
+        $maxLengthPost = \Cache::tags($modelCacheService->getListCacheTag($postModel))->rememberForever('maxLengthPost', function () {
             $post = Post::select(['title', 'slug'])->selectRaw('LENGTH(body) as body_length')->orderBy('body_length', 'desc')->first();
             return '<a href="' . route('posts.show', $post) . '">' . $post->title . '</a> (длина ' . $post->body_length . ' символов)' ;
         });
 
-        $minLengthPost = \Cache::tags(Post::getListCacheTag())->rememberForever('minLengthPost', function () {
+        $minLengthPost = \Cache::tags($modelCacheService->getListCacheTag($postModel))->rememberForever('minLengthPost', function () {
             $post = Post::select(['title', 'slug'])->selectRaw('LENGTH(body) as body_length')->orderBy('body_length', 'asc')->first();
             return '<a href="' . route('posts.show', $post) . '">' . $post->title . '</a> (длина ' . $post->body_length . ' символов)' ;
         });
 
-        $avgPostsByOwners = \Cache::tags(Post::getListCacheTag())->rememberForever('avgPostsByOwners', function () {
+        $avgPostsByOwners = \Cache::tags($modelCacheService->getListCacheTag($postModel))->rememberForever('avgPostsByOwners', function () {
             $subQuery = Post::select(['owner_id'])->selectRaw('count(*) as posts_count')->groupBy('owner_id');
             return Post::fromSub($subQuery, 'subQuery')->average('posts_count');
         });
 
 
-        $maxHistoryRows = \Cache::tags(Post::getListCacheTag())->rememberForever('maxHistoryRows', function () {
+        $maxHistoryRows = \Cache::tags($modelCacheService->getListCacheTag($postModel))->rememberForever('maxHistoryRows', function () {
             $post = Post::select(['title', 'slug'])->withCount('history')->orderBy('history_count', 'desc')->first();
             return '<a href="' . route('posts.show', $post) . '">' . $post->title . '</a> (количество изменений ' . $post->history_count . ')' ;
         });
 
-        $mostCommentablePost = \Cache::tags(Post::getListCacheTag())->rememberForever('mostCommentablePost', function () {
+        $mostCommentablePost = \Cache::tags($modelCacheService->getListCacheTag($postModel))->rememberForever('mostCommentablePost', function () {
             $post = Post::select(['title', 'slug'])->withCount('comments')->orderBy('comments_count', 'desc')->first();
             return '<a href="' . route('posts.show', $post) . '">' . $post->title . '</a> (количество комментариев ' . $post->comments_count . ')' ;
         });
