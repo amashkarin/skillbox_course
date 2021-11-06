@@ -3,15 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Feedback;
+use App\Service\ModelCacheService;
 
 
 class FeedbackController extends Controller
 {
 
-    public function index()
+    public function index(ModelCacheService $modelCacheService)
     {
-        $title = 'Результаты заполнения формы контатов';
-        $results = Feedback::latest()->get();
+        $title = 'Результаты заполнения формы контактов';
+        $sortField = 'created_at';
+        $sortDirection = 'desc';
+        $model = new Feedback();
+        $results = \Cache::tags($modelCacheService->getListCacheTag($model))->rememberForever($modelCacheService->getListCacheKey($model, [$sortField, $sortDirection]), function () {
+            return Feedback::latest()->get();
+        });
+
         return view('contacts.index', compact('title', 'results'));
     }
 

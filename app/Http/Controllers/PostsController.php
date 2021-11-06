@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\NewsItem;
 use App\Models\Post;
-use App\Models\Tag;
+use App\Service\ModelCacheService;
 use App\Service\TaggableHelper;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,26 +14,53 @@ class PostsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['only' => [
-            'store',
-            'create',
-            'update',
-            'edit',
-            'destroy',
-        ]]);
+        $this->middleware('auth', [
+            'only' => [
+                'store',
+                'create',
+                'update',
+                'edit',
+                'destroy',
+            ],
+        ]);
     }
 
-    public function index()
+    public function index(ModelCacheService $modelCacheService)
     {
         $title = 'Список статей';
-        $posts = Post::where('published', true)->with('tags')->latest()->paginate(10);
+        $pageSize = 10;
+        $sortField = 'created_at';
+        $sortDirection = 'desc';
+        $model = new Post();
+        $posts = \Cache::tags($modelCacheService->getListCacheTag($model))
+            ->rememberForever($modelCacheService->getListCacheKey($model, [
+                $pageSize,
+                $sortField,
+                $sortDirection,
+                'published',
+                'with_tags',
+            ]), function () use ($pageSize) {
+                return Post::where('published', true)->with('tags')->latest()->paginate($pageSize);
+            });
+
         return view('posts.index', compact('title', 'posts'));
     }
 
-    public function adminList()
+    public function adminList(ModelCacheService $modelCacheService)
     {
         $title = 'Управление статьями';
-        $posts = Post::latest()->paginate(20);
+        $pageSize = 20;
+        $sortField = 'created_at';
+        $sortDirection = 'desc';
+        $model = new Post();
+        $posts = \Cache::tags($modelCacheService->getListCacheTag($model))
+            ->rememberForever($modelCacheService->getListCacheKey($model, [
+                $pageSize,
+                $sortField,
+                $sortDirection,
+            ]), function () use ($pageSize) {
+                return Post::latest()->paginate($pageSize);
+            });
         return view('posts.admin_list', compact('title', 'posts'));
     }
 
@@ -70,8 +98,13 @@ class PostsController extends Controller
     }
 
 
-    public function show(Post $post)
+    public function show($routeKey)
     {
+        $post = Post::getByRouteKeyFromCache($routeKey, [
+            'tags',
+            'comments',
+            'history',
+        ]);
         $title = $post->title;
         return view('posts.show', compact('title', 'post'));
     }
@@ -124,7 +157,7 @@ class PostsController extends Controller
         }
 
         $attributes = $this->validate(request(), $rules);
-        $attributes['published'] = request('published') ? : 0;
+        $attributes['published'] = request('published') ?: 0;
 
         return $attributes;
     }

@@ -3,8 +3,6 @@
 namespace App\Models;
 
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-
 class Role extends Model
 {
     const ADMIN_ROLE_ID = 1;
